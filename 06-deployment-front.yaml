@@ -15,6 +15,7 @@ spec:
     spec:
       containers:
         - name: front
-          image: nginx
+          image: front-nginx
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

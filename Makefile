@@ -4,6 +4,8 @@ NAMESPACE ?= app-demo
 # Variables
 API_IMAGE=simple-api-pg
 API_DIR=./api
+FRONT_IMAGE=front-nginx
+FRONT_DIR=./front
 
 .PHONY: all build-api import-api apply delete status logs-api logs-postgres logs-front deploy
 
@@ -11,9 +13,17 @@ API_DIR=./api
 build-api:
 	@docker build -t $(API_IMAGE) $(API_DIR)
 
+# Build l'image du front localement
+build-front:
+	@docker build -t $(FRONT_IMAGE) $(FRONT_DIR)
+
 # Importe l'image dans le containerd de K3s
 import-api:
 	@docker save $(API_IMAGE) | sudo k3s ctr images import -
+
+# Importe l'image du front dans le containerd de K3s
+import-front:
+	@docker save $(FRONT_IMAGE) | sudo k3s ctr images import -
 
 # Appliquer tous les manifests K3s
 apply:
@@ -52,4 +62,4 @@ logs-front:
 	@$(KUBECTL) logs -l app=front -n $(NAMESPACE)
 
 # Déploiement complet
-deploy: build-api import-api apply
+deploy: build-api import-api build-front import-front apply
