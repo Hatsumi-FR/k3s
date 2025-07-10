@@ -3,7 +3,7 @@ import os, psycopg2
 
 app = Flask(__name__)
 
-@app.route('/api/data')
+@app.route('/data')
 def data():
     try:
         conn = psycopg2.connect(
