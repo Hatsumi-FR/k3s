@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
         - name: api
-          image: ghcr.io/mcandeia/simple-api-pg
+          image: simple-api-pg
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
           env:
