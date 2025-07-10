@@ -1,5 +1,5 @@
 apiVersion: traefik.io/v1alpha1
-kind: HTTPMiddleware
+kind: Middleware
 metadata:
   name: strip-api
   namespace: app-demo
