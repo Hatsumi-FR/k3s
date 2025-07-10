@@ -7,7 +7,7 @@ API_DIR=./api
 FRONT_IMAGE=front-nginx
 FRONT_DIR=./front
 
-.PHONY: all build-api import-api apply delete status logs-api logs-postgres logs-front deploy
+.PHONY: all build-api import-api apply delete status logs-api logs-postgres logs-front deploy redeploy-front restart-front
 
 # Build l'image de l'API localement
 build-api:
@@ -34,11 +34,13 @@ apply:
 	@$(KUBECTL) apply -f 05-deployment-api.yaml
 	@$(KUBECTL) apply -f 06-deployment-front.yaml
 	@$(KUBECTL) apply -f 07-services.yaml
+	@$(KUBECTL) apply -f 09-middleware-strip-api.yaml
 	@$(KUBECTL) apply -f 08-ingress.yaml
 
 # Supprimer les ressources (dans l’ordre inverse)
 delete:
 	-@$(KUBECTL) delete -f 08-ingress.yaml
+	-@$(KUBECTL) delete -f 09-middleware-strip-api.yaml
 	-@$(KUBECTL) delete -f 07-services.yaml
 	-@$(KUBECTL) delete -f 06-deployment-front.yaml
 	-@$(KUBECTL) delete -f 05-deployment-api.yaml
@@ -63,3 +65,8 @@ logs-front:
 
 # Déploiement complet
 deploy: build-api import-api build-front import-front apply
+
+.PHONY: redeploy-front
+
+# Build, import et redémarre le front
+redeploy-front: build-front import-front restart-front

@@ -5,10 +5,21 @@ metadata:
   namespace: app-demo
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: app-demo-strip-api@kubernetescrd
+    
+    
 spec:
   rules:
     - http:
         paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 5000
+
           - path: /data
             pathType: Prefix
             backend:
